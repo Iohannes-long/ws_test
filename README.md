@@ -7,9 +7,9 @@ python .\client.py
 
 ### receive json data from server
 ``` shell
-python .\client.py -s ws://127.0.0.1:8888/my_data
+python .\client.py -u ws://127.0.0.1:8888/my_data
 ```
-- -s default is ws://127.0.0.1
+- -u default is ws://127.0.0.1
 
 ### receive json data
 ``` shell

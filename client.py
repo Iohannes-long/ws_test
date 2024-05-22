@@ -29,7 +29,7 @@ def _my_print_end(pf, be_json):
     if be_json:
         pf.write(f']')
 
-def main(server, outfile, num, split_flag, be_json):
+def main(url, outfile, num, split_flag, be_json):
     global _app_exit
     
     qty = -1
@@ -38,8 +38,8 @@ def main(server, outfile, num, split_flag, be_json):
     pf = None
     if outfile is not None:
         pf = open(outfile, "w")
-    with connect(server) as session:
-        print(f'has connected {server}')
+    with connect(url) as session:
+        print(f'has connected {url}')
         be_first = True
         while not _app_exit and qty != 0:
             data = session.recv()
@@ -59,11 +59,11 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, _quit)
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', dest='server', type=str, default='ws://127.0.0.1', help='ws://x.x.x.x[:y]/z')
+    parser.add_argument('-u', dest='url', type=str, default='ws://127.0.0.1', help='ws://x.x.x.x[:y]/z')
     parser.add_argument('-f', dest='outfile', type=str, default=None, help='file name output data to')
     parser.add_argument('-n', dest='num', type=int, default=None, help='the num of receive server data times')
     parser.add_argument('-s', dest='split', type=str, default='@@@', help='split flag of two data')
     parser.add_argument('-j', dest='json', type=int, default=1, help='data is json or not')
     args = parser.parse_args()
     be_json = True if args.json == 1 else False
-    main(args.server, args.outfile, args.num, args.split, be_json)
+    main(args.url, args.outfile, args.num, args.split, be_json)
