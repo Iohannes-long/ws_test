@@ -52,7 +52,7 @@ async def _message_all():
         msg = _config['data'][_config['index_data']]
         if _config['be_json']:
             msg = json.dumps(msg)
-        print(msg)
+        # print(msg)
         for websocket in _CONNECTIONS:
             asyncio.create_task(_send(websocket, msg))
         _config['index_data'] = _config['index_data'] + 1 
@@ -60,7 +60,7 @@ async def _message_all():
     print('exit app')
     
 
-async def main(port, data, file, split_flag, wait_ms, be_json, be_loop, be_echo):
+async def main(url, data, file, split_flag, wait_ms, be_json, be_loop, be_echo):
     global _app_exit
     global _config
     _config['wait_ms'] = wait_ms
@@ -84,7 +84,17 @@ async def main(port, data, file, split_flag, wait_ms, be_json, be_loop, be_echo)
             else:
                 _config['data'] = [data]
     # print(_config['data'])
-    async with websockets.serve(_handler, "", port):
+    url = url.replace('ws://', '')
+    index = url.find(':')
+    port = 80
+    if index >= 0:
+        port = url[index+1:]
+        url = url[:index]
+        index = port.find('/')
+        if index >= 0:
+            port = port[:index]
+            url = url + port[index:]
+    async with websockets.serve(_handler, url, port):
         await _message_all()
 
 if __name__ == '__main__':
@@ -92,7 +102,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, _quit)
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', dest='port', type=int, default=80, help='the port of ws')
+    parser.add_argument('-u', dest='url', type=str, default='ws://127.0.0.1', help='ws://x.x.x.x[:y]/z')
     parser.add_argument('-d', dest='data', type=str, default=None, help='the data to send')
     parser.add_argument('-f', dest='file', type=str, default=None, help='the file to send')
     parser.add_argument('-s', dest='split', type=str, default=None, help='split flag with two data')
@@ -104,5 +114,5 @@ if __name__ == '__main__':
     be_json = True if args.json == 1 else False
     be_loop = True if args.loop == 1 else False
     be_echo = True if args.echo == 1 else False
-    asyncio.run(main(args.port, args.data, args.file, args.split, args.wait, be_json, be_loop, be_echo))
+    asyncio.run(main(args.url, args.data, args.file, args.split, args.wait, be_json, be_loop, be_echo))
     
