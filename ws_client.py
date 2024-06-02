@@ -45,13 +45,11 @@ def on_message(ws, data):
         parsed_data = json.loads(data)
         data = json.dumps(parsed_data, indent=4, sort_keys=False)            
     _my_print(_config['file'], data, _config['be_first'], _config['split'], _config['be_json'])
-    print(_config['qty'])
     if _config['qty'] is not None and _config['qty'] > 0:
         print(_config['qty'])
         _config['qty'] -= 1
         if _config['qty'] == 0:
             ws.close()
-            sys.exit(0)
     else:
         pass
     _config['be_first'] = False
@@ -63,6 +61,7 @@ def on_close(ws, close_status_code, close_msg):
     global _config
     _my_print_end(_config['file'], _config['be_first'])
     print("### closed ###")
+    sys.exit(0)
 
 def on_open(ws):
     print("Opened connection")
