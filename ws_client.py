@@ -41,10 +41,6 @@ def _my_print_end(pf, be_json):
 
 def on_message(ws, data):
     global _config
-    
-    if _config['be_first']:
-        parsed_data = json.loads(data)
-        data = json.dumps(parsed_data, indent=4, sort_keys=False)            
     _my_print(_config['file'], data, _config['be_first'], _config['split'], _config['be_json'])
     if _config['qty'] is not None and _config['qty'] > 0:
         print(_config['qty'])
@@ -54,14 +50,15 @@ def on_message(ws, data):
             on_close(ws, None, None)
     else:
         pass
-    _config['be_first'] = False
+    if _config['be_first']:
+        _config['be_first'] = False
 
 def on_error(ws, error):
     print(error)
 
 def on_close(ws, close_status_code, close_msg):
     global _config
-    _my_print_end(_config['file'], _config['be_first'])
+    _my_print_end(_config['file'], _config['be_json'])
     print("### closed ###")
     sys.exit(0)
 
