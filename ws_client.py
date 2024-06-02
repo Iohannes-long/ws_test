@@ -29,6 +29,7 @@ def _my_print(pf, data, be_first, split_flag, be_json):
             else:
                 pf.write(split_flag)
         pf.write(data)
+        pf.flush()
     else:
         print(data)
         
@@ -50,6 +51,7 @@ def on_message(ws, data):
         _config['qty'] -= 1
         if _config['qty'] == 0:
             ws.close()
+            on_close(ws, None, None)
     else:
         pass
     _config['be_first'] = False
