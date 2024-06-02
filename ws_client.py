@@ -4,6 +4,7 @@ import time
 import rel
 import argparse
 import json
+import sys
 
 
 _config = {
@@ -44,10 +45,15 @@ def on_message(ws, data):
         parsed_data = json.loads(data)
         data = json.dumps(parsed_data, indent=4, sort_keys=False)            
     _my_print(_config['file'], data, _config['be_first'], _config['split'], _config['be_json'])
+    print(_config['qty'])
     if _config['qty'] is not None and _config['qty'] > 0:
+        print(_config['qty'])
         _config['qty'] -= 1
+        if _config['qty'] == 0:
+            ws.close()
+            sys.exit(0)
     else:
-        ws.close()
+        pass
     _config['be_first'] = False
 
 def on_error(ws, error):
