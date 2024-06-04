@@ -33,7 +33,7 @@ async def _handler(websocket):
     if _config['be_echo']:
         async for msg in websocket:
             await _send(websocket, msg)
-            print(msg)   
+            print(msg)
             
 async def _message_all():
     global _config
